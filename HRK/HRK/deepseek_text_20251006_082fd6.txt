@@ -1,0 +1,24 @@
+```yaml
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - celery
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+
+  redis:
+    image: redis:alpine
+
+  celery:
+    build: .
+    command: celery -A main.celery_app worker --loglevel=info
+    depends_on:
+      - redis
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+```
